@@ -3,6 +3,9 @@ import { currentUser } from '@clerk/nextjs/server';
 import { UserButton } from '@clerk/nextjs';
 import { Footer } from '@/components/layout/Footer';
 
+// Cache homepage for 5 minutes
+export const revalidate = 300;
+
 export default async function Home() {
   const user = await currentUser();
 

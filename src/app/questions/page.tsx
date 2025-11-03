@@ -5,6 +5,9 @@ import { QuestionFilters } from '@/components/questions/QuestionFilters';
 import { QuestionCard } from '@/components/questions/QuestionCard';
 import { Footer } from '@/components/layout/Footer';
 
+// Revalidate this page every 60 seconds (ISR)
+export const revalidate = 60;
+
 interface SearchParams {
   category?: string;
   difficulty?: string;

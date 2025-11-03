@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { StudyPathCard } from '@/components/study-paths/StudyPathCard';
 import { Footer } from '@/components/layout/Footer';
 
+// Revalidate this page every 60 seconds (ISR)
+export const revalidate = 60;
+
 export default async function StudyPathsPage() {
   const user = await currentUser();
 
