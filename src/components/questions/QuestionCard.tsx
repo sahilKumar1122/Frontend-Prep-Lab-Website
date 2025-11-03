@@ -19,7 +19,7 @@ interface QuestionCardProps {
   totalQuestions?: number;
 }
 
-export function QuestionCard({ question, userProgress, isLoggedIn, questionNumber, totalQuestions }: QuestionCardProps) {
+export function QuestionCard({ question, userProgress, isLoggedIn, questionNumber }: QuestionCardProps) {
   const difficultyColors = {
     easy: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
     medium: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',

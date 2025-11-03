@@ -159,7 +159,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
           pre({ children }) {
             return <>{children}</>;
           },
-          code({ node, inline, className, children, ...props }: any) {
+          code({ inline, className, children, ...props }: { inline?: boolean; className?: string; children?: React.ReactNode }) {
             const match = /language-(\w+)/.exec(className || '');
             const language = match ? match[1] : '';
             const codeString = String(children).replace(/\n$/, '');
@@ -201,10 +201,10 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
               {children}
             </h4>
           ),
-          p: ({ children, node }: any) => {
+          p: ({ children, node }: { children?: React.ReactNode; node?: { children?: Array<{ type?: string; tagName?: string }> } }) => {
             // Check if paragraph contains code blocks or other block elements
             // This prevents hydration errors from <div> inside <p>
-            const hasBlockElement = node?.children?.some((child: any) => {
+            const hasBlockElement = node?.children?.some((child: { type?: string; tagName?: string }) => {
               // Check for code blocks (non-inline code)
               if (child.type === 'element' && child.tagName === 'code') {
                 return true;
@@ -218,7 +218,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
             
             // Also check if children contains any React elements that are block-level
             const childrenArray = React.Children.toArray(children);
-            const hasBlockChild = childrenArray.some((child: any) => {
+            const hasBlockChild = childrenArray.some((child: React.ReactNode) => {
               // Check if it's a React element with div/pre or custom components
               if (React.isValidElement(child)) {
                 const type = child.type;

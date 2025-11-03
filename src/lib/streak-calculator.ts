@@ -29,7 +29,7 @@ export async function calculateStreak(userId: string): Promise<{
 
   // Calculate current streak
   let currentStreak = 0;
-  let checkDate = new Date(activities[0].date);
+  const checkDate = new Date(activities[0].date);
   checkDate.setHours(0, 0, 0, 0);
 
   // Check if latest activity is today or yesterday
