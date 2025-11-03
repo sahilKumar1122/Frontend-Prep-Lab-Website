@@ -1,0 +1,253 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================
+// USER & AUTHENTICATION
+// ============================================
+
+model User {
+  id            String    @id // Clerk user ID (e.g., "user_2abc123...")
+  email         String    @unique
+  name          String?
+  avatar        String?
+  clerkId       String    @unique // Store Clerk ID for reference
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime  @default(now())
+  
+  // Relations
+  progress      UserProgress[]
+  bookmarks     Bookmark[]
+  notes         Note[]
+  userStats     UserStats?
+  studyPaths    UserStudyPath[]
+  dailyActivity DailyActivity[]
+  
+  @@index([email])
+  @@index([clerkId])
+}
+
+// ============================================
+// QUESTIONS & CONTENT
+// ============================================
+
+model Question {
+  id              String   @id @default(cuid())
+  slug            String   @unique // URL-friendly version of title
+  title           String
+  category        String   // 'angular', 'react', 'javascript', etc.
+  difficulty      String   // 'easy', 'medium', 'hard'
+  tags            String[] // Array of tags
+  content         String   @db.Text // Question content in markdown
+  answer          String   @db.Text // Answer in markdown
+  codeExample     String?  @db.Text // Optional code examples
+  readingTime     Int      @default(5) // Estimated minutes
+  sourceUrl       String?  // GitHub link
+  order           Int?     // Order within category
+  prerequisites   String[] // Array of question IDs
+  relatedQuestions String[] // Array of question IDs
+  
+  // Metadata from GitHub
+  githubPath      String?
+  lastSyncedAt    DateTime @default(now())
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  progress        UserProgress[]
+  bookmarks       Bookmark[]
+  notes           Note[]
+  studyPathItems  StudyPathItem[]
+  
+  @@index([category, difficulty])
+  @@index([slug])
+}
+
+// ============================================
+// USER PROGRESS TRACKING
+// ============================================
+
+model UserProgress {
+  id              String   @id @default(cuid())
+  userId          String
+  questionId      String
+  status          String   @default("not-started") // 'not-started', 'in-progress', 'completed', 'review'
+  bookmarked      Boolean  @default(false)
+  
+  // Time tracking
+  timeSpent       Int      @default(0) // in minutes
+  attempts        Int      @default(0)
+  
+  // Dates
+  startedAt       DateTime?
+  completedAt     DateTime?
+  lastReviewedAt  DateTime?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question        Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, questionId])
+  @@index([userId, status])
+  @@index([completedAt])
+}
+
+// ============================================
+// BOOKMARKS & NOTES
+// ============================================
+
+model Bookmark {
+  id         String   @id @default(cuid())
+  userId     String
+  questionId String
+  createdAt  DateTime @default(now())
+  
+  // Relations
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, questionId])
+  @@index([userId])
+}
+
+model Note {
+  id         String   @id @default(cuid())
+  userId     String
+  questionId String
+  content    String   @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  // Relations
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, questionId])
+  @@index([userId])
+}
+
+// ============================================
+// STUDY PATHS
+// ============================================
+
+model StudyPath {
+  id                String          @id @default(cuid())
+  name              String
+  slug              String          @unique
+  description       String   @db.Text
+  level             String          // 'junior', 'mid', 'senior'
+  category          String          // 'angular', 'react', 'full-stack', etc.
+  estimatedHours    Int
+  isPublished       Boolean         @default(false)
+  order             Int?
+  
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  
+  // Relations
+  items             StudyPathItem[]
+  userStudyPaths    UserStudyPath[]
+  
+  @@index([category, level])
+}
+
+model StudyPathItem {
+  id           String     @id @default(cuid())
+  studyPathId  String
+  questionId   String
+  order        Int
+  isOptional   Boolean    @default(false)
+  
+  // Relations
+  studyPath    StudyPath  @relation(fields: [studyPathId], references: [id], onDelete: Cascade)
+  question     Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@unique([studyPathId, questionId])
+  @@index([studyPathId, order])
+}
+
+model UserStudyPath {
+  id              String    @id @default(cuid())
+  userId          String
+  studyPathId     String
+  status          String    @default("not-started") // 'not-started', 'in-progress', 'completed'
+  progress        Int       @default(0) // 0-100 percentage
+  
+  startedAt       DateTime?
+  completedAt     DateTime?
+  lastAccessedAt  DateTime  @default(now())
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studyPath       StudyPath @relation(fields: [studyPathId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, studyPathId])
+  @@index([userId, status])
+}
+
+// ============================================
+// STATISTICS & STREAKS
+// ============================================
+
+model UserStats {
+  id                      String   @id @default(cuid())
+  userId                  String   @unique
+  
+  // Counts
+  totalQuestionsCompleted Int      @default(0)
+  totalTimeSpent          Int      @default(0) // in minutes
+  
+  // By category (JSON object: { angular: 10, react: 5, ... })
+  questionsByCategory     Json     @default("{}")
+  questionsByDifficulty   Json     @default("{}")
+  
+  // Streaks
+  currentStreak           Int      @default(0)
+  longestStreak           Int      @default(0)
+  lastStudyDate           DateTime?
+  
+  // Averages
+  averageTimePerQuestion  Float    @default(0)
+  
+  updatedAt               DateTime @updatedAt
+  
+  // Relations
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
+model DailyActivity {
+  id                String   @id @default(cuid())
+  userId            String
+  date              DateTime @db.Date // Date only (no time)
+  questionsCompleted Int     @default(0)
+  timeSpent         Int      @default(0) // in minutes
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Relations
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, date])
+  @@index([userId, date])
+}
