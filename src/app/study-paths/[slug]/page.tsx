@@ -17,41 +17,57 @@ export default async function StudyPathDetailPage({ params }: PageProps) {
   const user = await currentUser();
 
   // Fetch study path with all items and questions
-  const studyPath = await prisma.studyPath.findUnique({
-    where: { slug },
-    include: {
-      items: {
+  const studyPath = user
+    ? await prisma.studyPath.findUnique({
+        where: { slug },
         include: {
-          question: {
-            include: user
-              ? {
+          items: {
+            include: {
+              question: {
+                include: {
                   progress: {
                     where: { userId: user.id },
                     take: 1,
                   },
-                }
-              : false,
+                },
+              },
+            },
+            orderBy: { order: 'asc' },
           },
-        },
-        orderBy: { order: 'asc' },
-      },
-      userStudyPaths: user
-        ? {
+          userStudyPaths: {
             where: { userId: user.id },
             take: 1,
-          }
-        : false,
-    },
-  });
+          },
+        },
+      })
+    : await prisma.studyPath.findUnique({
+        where: { slug },
+        include: {
+          items: {
+            include: {
+              question: true,
+            },
+            orderBy: { order: 'asc' },
+          },
+        },
+      });
 
   if (!studyPath) {
     notFound();
   }
 
-  const userProgress = studyPath.userStudyPaths?.[0];
+  const userProgress = 'userStudyPaths' in studyPath && Array.isArray(studyPath.userStudyPaths) 
+    ? studyPath.userStudyPaths[0] 
+    : undefined;
   const isEnrolled = !!userProgress;
   const completedQuestions = studyPath.items.filter(
-    (item: typeof studyPath.items[0]) => item.question.progress?.[0]?.status === 'completed'
+    (item) => {
+      const question = item.question;
+      if ('progress' in question && Array.isArray(question.progress)) {
+        return question.progress[0]?.status === 'completed';
+      }
+      return false;
+    }
   ).length;
   const totalQuestions = studyPath.items.length;
   const progressPercentage = totalQuestions > 0 ? Math.round((completedQuestions / totalQuestions) * 100) : 0;
@@ -187,8 +203,11 @@ export default async function StudyPathDetailPage({ params }: PageProps) {
           <h2 className="mb-6 text-2xl font-bold text-slate-900 dark:text-slate-100">
             Learning Path ({totalQuestions} Questions)
           </h2>
-          {studyPath.items.map((item: typeof studyPath.items[0], index: number) => {
-            const questionProgress = item.question.progress?.[0];
+          {studyPath.items.map((item, index: number) => {
+            const question = item.question;
+            const questionProgress = 'progress' in question && Array.isArray(question.progress) 
+              ? question.progress[0] 
+              : undefined;
             const isCompleted = questionProgress?.status === 'completed';
             const isInProgress = questionProgress?.status === 'in-progress';
 

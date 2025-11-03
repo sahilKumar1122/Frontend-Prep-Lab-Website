@@ -15,11 +15,12 @@ async function wakeDatabase() {
     const count = await prisma.question.count();
     console.log(`\n📊 Found ${count} questions in database`);
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Database connection failed:');
-    console.error(error.message);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(errorMessage);
     
-    if (error.message.includes("Can't reach database")) {
+    if (errorMessage.includes("Can't reach database")) {
       console.log('\n💡 Solutions:');
       console.log('1. Go to https://supabase.com/dashboard');
       console.log('2. Select your project');

@@ -1,6 +1,7 @@
 import { currentUser } from '@clerk/nextjs/server';
 import { UserButton } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { getOrCreateUser } from '@/lib/user-sync';
 import { Footer } from '@/components/layout/Footer';
@@ -198,7 +199,7 @@ export default async function DashboardPage() {
             Quick Actions
           </h3>
           <div className="grid gap-4 md:grid-cols-3">
-            <a
+            <Link
               href="/questions"
               className="rounded-lg border-2 border-blue-200 bg-blue-50 p-4 transition-all hover:border-blue-400 hover:shadow-md dark:border-blue-900 dark:bg-blue-950"
             >
@@ -208,8 +209,8 @@ export default async function DashboardPage() {
               <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                 Explore all interview questions
               </p>
-            </a>
-            <a
+            </Link>
+            <Link
               href="/study-paths"
               className="rounded-lg border-2 border-green-200 bg-green-50 p-4 transition-all hover:border-green-400 hover:shadow-md dark:border-green-900 dark:bg-green-950"
             >
@@ -219,8 +220,8 @@ export default async function DashboardPage() {
               <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                 Follow curated learning paths
               </p>
-            </a>
-            <a
+            </Link>
+            <Link
               href="/bookmarks"
               className="rounded-lg border-2 border-purple-200 bg-purple-50 p-4 transition-all hover:border-purple-400 hover:shadow-md dark:border-purple-900 dark:bg-purple-950"
             >
@@ -230,7 +231,7 @@ export default async function DashboardPage() {
               <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                 View your saved questions
               </p>
-            </a>
+            </Link>
           </div>
         </div>
       </main>

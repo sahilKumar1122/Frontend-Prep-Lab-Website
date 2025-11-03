@@ -49,7 +49,17 @@ export async function POST(req: Request) {
 
   if (eventType === 'user.created' || eventType === 'user.updated') {
     try {
-      await syncUserToDatabase(evt.data);
+      // Convert webhook data to ClerkUser format
+      const userData = {
+        id: evt.data.id,
+        emailAddresses: (evt.data.email_addresses || []).map(email => ({
+          emailAddress: email.email_address,
+        })),
+        firstName: evt.data.first_name,
+        lastName: evt.data.last_name,
+        imageUrl: evt.data.image_url,
+      };
+      await syncUserToDatabase(userData);
       console.log(`✅ User ${eventType}:`, evt.data.id);
     } catch (error) {
       console.error(`Error syncing user:`, error);

@@ -35,7 +35,7 @@ export default function NotFound() {
             Question Not Found
           </h1>
           <p className="mb-8 text-lg text-slate-600 dark:text-slate-400">
-            The question you're looking for doesn't exist or may have been removed.
+            The question you&apos;re looking for doesn&apos;t exist or may have been removed.
           </p>
 
           <div className="flex items-center justify-center gap-4">
