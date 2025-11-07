@@ -17,22 +17,54 @@ export default function QuestionsLoading() {
           ))}
         </div>
 
-        {/* Question Cards Skeleton */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="animate-pulse rounded-xl bg-white p-6 shadow-lg dark:bg-slate-900">
-              <div className="mb-3 h-4 w-16 rounded bg-slate-200 dark:bg-slate-800"></div>
-              <div className="mb-2 h-6 w-full rounded bg-slate-200 dark:bg-slate-800"></div>
-              <div className="mb-4 space-y-2">
-                <div className="h-3 w-full rounded bg-slate-200 dark:bg-slate-800"></div>
-                <div className="h-3 w-3/4 rounded bg-slate-200 dark:bg-slate-800"></div>
-              </div>
-              <div className="flex gap-2">
-                <div className="h-6 w-16 rounded-full bg-slate-200 dark:bg-slate-800"></div>
-                <div className="h-6 w-16 rounded-full bg-slate-200 dark:bg-slate-800"></div>
-              </div>
-            </div>
-          ))}
+        {/* Questions Table Skeleton */}
+        <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">#</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Title</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Category</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Difficulty</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Tags</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Time</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="px-4 py-4">
+                      <div className="h-4 w-4 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div className="h-4 w-6 rounded bg-slate-200 dark:bg-slate-800"></div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div className="h-4 w-64 rounded bg-slate-200 dark:bg-slate-800"></div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div className="h-5 w-20 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div className="h-4 w-16 rounded bg-slate-200 dark:bg-slate-800"></div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div className="flex gap-1.5">
+                        <div className="h-5 w-12 rounded-md bg-slate-200 dark:bg-slate-800"></div>
+                        <div className="h-5 w-12 rounded-md bg-slate-200 dark:bg-slate-800"></div>
+                        <div className="h-5 w-12 rounded-md bg-slate-200 dark:bg-slate-800"></div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div className="h-4 w-12 rounded bg-slate-200 dark:bg-slate-800"></div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </main>
     </div>

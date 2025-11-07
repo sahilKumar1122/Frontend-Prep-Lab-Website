@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { currentUser } from '@clerk/nextjs/server';
 import Link from 'next/link';
 import { QuestionFilters } from '@/components/questions/QuestionFilters';
-import { QuestionCard } from '@/components/questions/QuestionCard';
+import { QuestionTable } from '@/components/questions/QuestionTable';
 import { Footer } from '@/components/layout/Footer';
 
 // Revalidate this page every 60 seconds (ISR)
@@ -144,7 +144,7 @@ export default async function QuestionsPage({
           categoryCounts={categoryCounts}
         />
 
-        {/* Questions Grid */}
+        {/* Questions Table */}
         {questions.length === 0 ? (
           <div className="rounded-xl bg-white p-12 text-center shadow-lg dark:bg-slate-900">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
@@ -176,24 +176,7 @@ export default async function QuestionsPage({
             </Link>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2">
-            {questions.map((question, index: number) => {
-              const progress = 'progress' in question && Array.isArray(question.progress) 
-                ? question.progress[0] 
-                : undefined;
-              
-              return (
-                <QuestionCard
-                  key={question.id}
-                  question={question}
-                  userProgress={progress}
-                  isLoggedIn={!!user}
-                  questionNumber={index + 1}
-                  totalQuestions={questions.length}
-                />
-              );
-            })}
-          </div>
+          <QuestionTable questions={questions} isLoggedIn={!!user} />
         )}
       </main>
       <Footer />

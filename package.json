@@ -12,7 +12,24 @@
     "stats:recalculate": "tsx recalculate-stats.ts",
     "import:questions": "tsx scripts/fetch-and-import.ts",
     "import:local": "tsx prisma/import-questions.ts",
-    "clear:questions": "tsx scripts/clear-questions.ts"
+    "clear:questions": "tsx scripts/clear-questions.ts",
+    "assess:questions": "tsx scripts/assess-question-quality.ts",
+    "improve:question": "tsx scripts/improve-question.ts",
+    "add:summaries": "tsx scripts/add-quick-summaries.ts",
+    "improve:change-detection": "tsx scripts/improve-specific-question.ts",
+    "improve:batch": "tsx scripts/batch-improve-questions.ts",
+    "improve:remaining": "tsx scripts/batch-improve-remaining.ts",
+    "polish:final": "tsx scripts/polish-top-questions.ts",
+    "add:diagrams-tips": "tsx scripts/add-diagrams-and-tips.ts",
+    "reassess:difficulty": "tsx scripts/reassess-difficulty-tags.ts",
+    "show:difficulty": "tsx scripts/show-difficulty-tags.ts",
+    "analyze:new": "tsx scripts/analyze-new-questions.ts",
+    "semantic:check": "tsx scripts/semantic-duplicate-check.ts",
+    "import:new": "tsx scripts/batch-import-new-questions.ts",
+    "enhance:new": "tsx scripts/enhance-new-questions.ts",
+    "import:partial": "tsx scripts/import-partially-covered.ts",
+    "enhance:good": "tsx scripts/enhance-good-questions.ts",
+    "enhance:remaining": "tsx scripts/enhance-remaining-questions.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
