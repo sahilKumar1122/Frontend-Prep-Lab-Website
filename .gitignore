@@ -45,6 +45,8 @@ partially-covered-questions.json
 semantic-analysis-results.json
 truly-new-questions.json
 question-quality-report.json
+parsed-js-questions.json
+js-quality-report.json
 
 # Temporary files
 temp-*.md

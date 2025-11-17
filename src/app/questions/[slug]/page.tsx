@@ -2,9 +2,10 @@ import { prisma } from '@/lib/prisma';
 import { currentUser } from '@clerk/nextjs/server';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
 import { QuestionProgress } from '@/components/questions/QuestionProgress';
 import { Footer } from '@/components/layout/Footer';
+import { queryCache, getCacheKey } from '@/lib/cache';
+import { MarkdownRendererSimple } from '@/components/markdown/MarkdownRendererSimple';
 
 interface PageProps {
   params: Promise<{
@@ -12,53 +13,83 @@ interface PageProps {
   }>;
 }
 
+// Generate static pages at build time for better performance
+export async function generateStaticParams() {
+  const questions = await prisma.question.findMany({
+    select: { slug: true },
+    take: 50, // Generate first 50 questions statically
+  });
+
+  return questions.map((question) => ({
+    slug: question.slug,
+  }));
+}
+
+// Aggressive caching for maximum speed
+export const revalidate = 3600; // 1 hour
+export const dynamicParams = true;
+
 export default async function QuestionPage({ params }: PageProps) {
   const { slug } = await params;
-  const user = await currentUser();
-
-  // Fetch the question
-  const question = user
-    ? await prisma.question.findUnique({
+  
+  // Fetch question FIRST - don't wait for auth at all!
+  const question = await queryCache.get(
+    getCacheKey('question', slug),
+    async () => {
+      return prisma.question.findUnique({
         where: { slug },
-        include: {
-          progress: {
-            where: { userId: user.id },
-            take: 1,
-          },
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          content: true,
+          answer: true,
+          category: true,
+          difficulty: true,
+          tags: true,
+          order: true,
+          readingTime: true,
         },
-      })
-    : await prisma.question.findUnique({
-        where: { slug },
       });
+    },
+    300000 // 5 minutes
+  );
 
   if (!question) {
     notFound();
   }
 
-  const userProgress = user && 'progress' in question && Array.isArray(question.progress)
-    ? question.progress[0]
-    : undefined;
   const tags = Array.isArray(question.tags) ? question.tags : [];
 
-  // Fetch all questions in order to find previous/next and current position
-  const allQuestions = await prisma.question.findMany({
-    orderBy: [
-      { category: 'asc' },
-      { order: 'asc' },
-      { createdAt: 'desc' },
-    ],
-    select: {
-      slug: true,
-      title: true,
-    },
-  });
+  // Get navigation data FAST (no auth needed)
+  const [previousQuestion, nextQuestion, totalQuestions] = await Promise.all([
+    // Previous question
+    prisma.question.findFirst({
+      where: {
+        OR: [
+          { category: question.category, order: { lt: question.order || 0 } },
+          { category: { lt: question.category } },
+        ],
+      },
+      orderBy: [{ category: 'desc' }, { order: 'desc' }],
+      select: { slug: true, title: true },
+    }),
+    // Next question
+    prisma.question.findFirst({
+      where: {
+        OR: [
+          { category: question.category, order: { gt: question.order || 0 } },
+          { category: { gt: question.category } },
+        ],
+      },
+      orderBy: [{ category: 'asc' }, { order: 'asc' }],
+      select: { slug: true, title: true },
+    }),
+    // Total count (cached separately)
+    queryCache.get('total-questions-count', () => prisma.question.count(), 3600000), // 1 hour
+  ]);
 
-  // Find current question index and get previous/next
-  const currentIndex = allQuestions.findIndex(q => q.slug === slug);
-  const questionNumber = currentIndex + 1;
-  const totalQuestions = allQuestions.length;
-  const previousQuestion = currentIndex > 0 ? allQuestions[currentIndex - 1] : null;
-  const nextQuestion = currentIndex < allQuestions.length - 1 ? allQuestions[currentIndex + 1] : null;
+  const questionNumber = question.order || 0;
 
   const difficultyColors = {
     easy: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
@@ -150,7 +181,7 @@ export default async function QuestionPage({ params }: PageProps) {
             <h2 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
               Question
             </h2>
-            <MarkdownRenderer content={question.content} />
+            <MarkdownRendererSimple content={question.content} />
           </div>
 
           {/* Answer Content */}
@@ -158,18 +189,16 @@ export default async function QuestionPage({ params }: PageProps) {
             <h2 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
               Answer
             </h2>
-            <MarkdownRenderer content={question.answer} />
+            <MarkdownRendererSimple content={question.answer} />
           </div>
 
-          {/* Progress Tracking (if logged in) */}
-          {user && (
-            <QuestionProgress
-              userId={user.id}
-              questionId={question.id}
-              initialStatus={userProgress?.status}
-              initialTimeSpent={userProgress?.timeSpent || 0}
-            />
-          )}
+          {/* Progress Tracking - Load async on client */}
+          <QuestionProgress
+            userId={''}
+            questionId={question.id}
+            initialStatus={undefined}
+            initialTimeSpent={0}
+          />
 
           {/* Navigation: Previous/Next */}
           <div className="mt-8 space-y-4">

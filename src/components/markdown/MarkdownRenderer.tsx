@@ -4,8 +4,26 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useEffect, useRef, useState } from 'react';
 import React from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import dynamic from 'next/dynamic';
+
+// Lazy load SyntaxHighlighter to reduce initial bundle size
+const SyntaxHighlighter = dynamic(
+  () => import('react-syntax-highlighter').then((mod) => mod.Prism),
+  {
+    loading: () => (
+      <div className="my-6 rounded-xl border border-slate-200 bg-slate-100 p-8 text-center dark:border-slate-800 dark:bg-slate-900">
+        <div className="text-slate-600 dark:text-slate-400">Loading code...</div>
+      </div>
+    ),
+    ssr: false,
+  }
+);
+
+// Lazy load the style as well
+const loadVscDarkPlus = async () => {
+  const mod = await import('react-syntax-highlighter/dist/esm/styles/prism');
+  return mod.vscDarkPlus;
+};
 
 interface MermaidProps {
   chart: string;
@@ -72,6 +90,11 @@ function Mermaid({ chart }: MermaidProps) {
 
 function CodeBlock({ language, value }: { language: string; value: string }) {
   const [copied, setCopied] = useState(false);
+  const [style, setStyle] = useState<Record<string, React.CSSProperties> | null>(null);
+
+  useEffect(() => {
+    loadVscDarkPlus().then(setStyle);
+  }, []);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(value);
@@ -121,7 +144,7 @@ function CodeBlock({ language, value }: { language: string; value: string }) {
       <div className="overflow-x-auto">
         <SyntaxHighlighter
           language={language || 'text'}
-          style={vscDarkPlus}
+          style={style || undefined}
           showLineNumbers={value.split('\n').length > 3}
           customStyle={{
             margin: 0,

@@ -73,6 +73,8 @@ model Question {
   
   @@index([category, difficulty])
   @@index([slug])
+  @@index([category])
+  @@index([difficulty])
 }
 
 // ============================================
@@ -164,6 +166,8 @@ model StudyPath {
   userStudyPaths    UserStudyPath[]
   
   @@index([category, level])
+  @@index([slug])
+  @@index([isPublished])
 }
 
 model StudyPathItem {
@@ -179,6 +183,7 @@ model StudyPathItem {
   
   @@unique([studyPathId, questionId])
   @@index([studyPathId, order])
+  @@index([questionId])
 }
 
 model UserStudyPath {

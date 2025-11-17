@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node dev-with-browser.js",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -29,7 +29,17 @@
     "enhance:new": "tsx scripts/enhance-new-questions.ts",
     "import:partial": "tsx scripts/import-partially-covered.ts",
     "enhance:good": "tsx scripts/enhance-good-questions.ts",
-    "enhance:remaining": "tsx scripts/enhance-remaining-questions.ts"
+    "enhance:remaining": "tsx scripts/enhance-remaining-questions.ts",
+    "parse:js": "tsx scripts/parse-js-questions.ts",
+    "import:js": "tsx scripts/import-js-questions.ts",
+    "update:js-summaries": "tsx scripts/update-js-summaries.ts",
+    "update:angular-summaries": "tsx scripts/update-angular-summaries.ts",
+    "assess:js": "tsx scripts/assess-js-quality.ts",
+    "js:import-all": "npm run parse:js && npm run import:js && npm run assess:js",
+    "db:studio": "cd prisma && npx prisma studio --port 5555",
+    "perf:audit": "tsx scripts/performance-audit.ts",
+    "perf:monitor": "tsx scripts/performance-monitor.ts",
+    "analyze": "cross-env ANALYZE=true npm run build"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -42,7 +52,9 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
+    "isomorphic-dompurify": "^2.32.0",
     "lucide-react": "^0.545.0",
+    "marked": "^17.0.0",
     "mermaid": "^11.12.0",
     "next": "15.5.5",
     "pg": "^8.16.3",
@@ -58,12 +70,14 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@next/bundle-analyzer": "^15.5.5",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.5",
+    "open": "^10.2.0",
     "prisma": "^6.17.1",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",

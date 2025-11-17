@@ -1,0 +1,686 @@
+[
+  {
+    "title": "Can I use AOT compilation with Ivy?",
+    "slug": "can-i-use-aot-compilation-with-ivy",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "Do I still need to use entryComponents array in Angular9?",
+    "slug": "do-i-still-need-to-use-entrycomponents-array-in-angular9",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "Give an example of few metadata errors?",
+    "slug": "give-an-example-of-few-metadata-errors",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "Give few examples for NgModules?",
+    "slug": "give-few-examples-for-ngmodules",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How can I translate attribute?",
+    "slug": "how-can-i-translate-attribute",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How can I use SASS in angular project?",
+    "slug": "how-can-i-use-sass-in-angular-project",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How can you read full response?",
+    "slug": "how-can-you-read-full-response",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you create displayBlock components?",
+    "slug": "how-do-you-create-displayblock-components",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you debug Memory Leaks in Angular?",
+    "slug": "angular-how-do-you-debug-memory-leaks-in-angular",
+    "difficulty": "hard",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "How do you define typings for custom elements?",
+    "slug": "how-do-you-define-typings-for-custom-elements",
+    "difficulty": "hard",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you implement Complex Form Validation?",
+    "slug": "angular-how-do-you-implement-complex-form-validation",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "How do you invoke a builder?",
+    "slug": "how-do-you-invoke-a-builder",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you manually bootstrap an application?",
+    "slug": "how-do-you-manually-bootstrap-an-application",
+    "difficulty": "hard",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you manually register locale data?",
+    "slug": "how-do-you-manually-register-locale-data",
+    "difficulty": "hard",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you prevent automatic sanitization?",
+    "slug": "how-do-you-prevent-automatic-sanitization",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you provide configuration inheritance?",
+    "slug": "how-do-you-provide-configuration-inheritance",
+    "difficulty": "hard",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you report missing translations?",
+    "slug": "how-do-you-report-missing-translations",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you run Bazel directly?",
+    "slug": "how-do-you-run-bazel-directly",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you upgrade angular version?",
+    "slug": "how-do-you-upgrade-angular-version",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you upgrade location service of angularjs?",
+    "slug": "how-do-you-upgrade-location-service-of-angularjs",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you use Bazel with Angular CLI?",
+    "slug": "how-do-you-use-bazel-with-angular-cli",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How do you use jquery in Angular?",
+    "slug": "how-do-you-use-jquery-in-angular",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How does Angular simplify Internationalization?",
+    "slug": "how-does-angular-simplify-internationalization",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "How does Content Projection work internally?",
+    "slug": "angular-how-does-content-projection-work-internally",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "How does NgRx integrate with Angular?",
+    "slug": "angular-how-does-ngrx-integrate-with-angular",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "How to create Custom Structural Directives?",
+    "slug": "angular-how-to-create-custom-structural-directives",
+    "difficulty": "hard",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "How to create Dynamic Components?",
+    "slug": "angular-how-to-create-dynamic-components",
+    "difficulty": "hard",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "How to implement Internationalization (i18n)?",
+    "slug": "angular-how-to-implement-internationalization-i18n",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "How to implement Micro-Frontends in Angular?",
+    "slug": "angular-how-to-implement-micro-frontends-in-angular",
+    "difficulty": "hard",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "How to implement Service Workers and PWA?",
+    "slug": "angular-how-to-implement-service-workers-and-pwa",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "How to profile and optimize Angular performance?",
+    "slug": "angular-how-to-profile-and-optimize-angular-performance",
+    "difficulty": "hard",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "How to use Web Workers in Angular?",
+    "slug": "angular-how-to-use-web-workers-in-angular",
+    "difficulty": "hard",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "Is any special configuration required for Angular9?",
+    "slug": "is-any-special-configuration-required-for-angular9",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "Is it possible to do aliasing for inputs and outputs?",
+    "slug": "is-it-possible-to-do-aliasing-for-inputs-and-outputs",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "Is mandatory to pass static flag for ViewChild?",
+    "slug": "is-mandatory-to-pass-static-flag-for-viewchild",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "List down the pluralization categories?",
+    "slug": "list-down-the-pluralization-categories",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are 10+ Performance Optimization Techniques in Angular?",
+    "slug": "angular-what-are-10-performance-optimization-techniques-in-angular",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What are Angular Module Boundaries and Architecture?",
+    "slug": "angular-what-are-angular-module-boundaries-and-architecture",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What are Angular Modules?",
+    "slug": "angular-what-are-angular-modules",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What are Angular Schematics?",
+    "slug": "angular-what-are-angular-schematics",
+    "difficulty": "hard",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What are Angular Security Best Practices?",
+    "slug": "angular-what-are-angular-security-best-practices",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What are Angular Signals vs Observables?",
+    "slug": "angular-what-are-angular-signals-vs-observables",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What are class field decorators?",
+    "slug": "what-are-class-field-decorators",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are HTTP Interceptors?",
+    "slug": "angular-what-are-http-interceptors",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What are macros?",
+    "slug": "what-are-macros",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are Modern Angular Features (Signals, Standalone, Zoneless)?",
+    "slug": "angular-what-are-modern-angular-features-signals-standalone-zoneless",
+    "difficulty": "hard",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What are Reactive Forms in Angular?",
+    "slug": "angular-what-are-reactive-forms-in-angular",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What are Route Guards and Authentication?",
+    "slug": "angular-what-are-route-guards-and-authentication",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What are RxJS Operators? Explain switchMap, mergeMap, concatMap, and exhaustMap",
+    "slug": "angular-what-are-rxjs-operators-explain-switchmap-mergemap-concatmap-and-exhaustmap",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What are the advantages of Bazel tool?",
+    "slug": "what-are-the-advantages-of-bazel-tool",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the class decorators in Angular?",
+    "slug": "what-are-the-class-decorators-in-angular",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the differences between ngmodule and javascript module?",
+    "slug": "what-are-the-differences-between-ngmodule-and-javascript-module",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the differences of various versions of Angular?",
+    "slug": "what-are-the-differences-of-various-versions-of-angular",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the different types of Data Binding in Angular?",
+    "slug": "angular-what-are-the-different-types-of-data-binding-in-angular",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What are the different ways to remove duplicate service registration?",
+    "slug": "what-are-the-different-ways-to-remove-duplicate-service-registration",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the four phases of template translation?",
+    "slug": "what-are-the-four-phases-of-template-translation",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the list of template expression operators?",
+    "slug": "what-are-the-list-of-template-expression-operators",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the restrictions of metadata?",
+    "slug": "what-are-the-restrictions-of-metadata",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the restrictions on declarable classes?",
+    "slug": "what-are-the-restrictions-on-declarable-classes",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the state CSS classes provided by ngModel?",
+    "slug": "what-are-the-state-css-classes-provided-by-ngmodel",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the steps to use animation module?",
+    "slug": "what-are-the-steps-to-use-animation-module",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the steps to use declaration elements?",
+    "slug": "what-are-the-steps-to-use-declaration-elements",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the types of validator functions?",
+    "slug": "what-are-the-types-of-validator-functions",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are the various kinds of directives?",
+    "slug": "what-are-the-various-kinds-of-directives",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What are workspace APIs?",
+    "slug": "what-are-workspace-apis",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is a bootstrapped component?",
+    "slug": "what-is-a-bootstrapped-component",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is Angular CLI Builder?",
+    "slug": "what-is-angular-cli-builder",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is Angular DSL?",
+    "slug": "what-is-angular-dsl",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is Angular Hydration and SSR?",
+    "slug": "angular-what-is-angular-hydration-and-ssr",
+    "difficulty": "hard",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is Angular Ivy Renderer?",
+    "slug": "angular-what-is-angular-ivy-renderer",
+    "difficulty": "easy",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is Angular Router?",
+    "slug": "angular-what-is-angular-router",
+    "difficulty": "easy",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is Angular Testing Architecture?",
+    "slug": "angular-what-is-angular-testing-architecture",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is Angular's Change Detection Mechanism?",
+    "slug": "angular-what-is-angulars-change-detection-mechanism",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is Angular's Core Architecture?",
+    "slug": "angular-what-is-angulars-core-architecture",
+    "difficulty": "easy",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is Angular's Dependency Injection System?",
+    "slug": "angular-what-is-angulars-dependency-injection-system",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is Angular's Modular Architecture?",
+    "slug": "angular-what-is-angulars-modular-architecture",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is AOT vs JIT Compilation?",
+    "slug": "angular-what-is-aot-vs-jit-compilation",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is Bazel tool?",
+    "slug": "what-is-bazel-tool",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is codelyzer?",
+    "slug": "what-is-codelyzer",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is declarable in Angular?",
+    "slug": "what-is-declarable-in-angular",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is folding?",
+    "slug": "what-is-folding",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is host property in css?",
+    "slug": "what-is-host-property-in-css",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is metadata rewriting?",
+    "slug": "what-is-metadata-rewriting",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is multicasting?",
+    "slug": "what-is-multicasting",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is ngcc?",
+    "slug": "what-is-ngcc",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is NgUpgrade?",
+    "slug": "what-is-ngupgrade",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is Non null type assertion operator?",
+    "slug": "what-is-non-null-type-assertion-operator",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is Renderer2 and when to use it?",
+    "slug": "angular-what-is-renderer2-and-when-to-use-it",
+    "difficulty": "hard",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is RxJS and why use Observables?",
+    "slug": "angular-what-is-rxjs-and-why-use-observables",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is safe navigation operator?",
+    "slug": "what-is-safe-navigation-operator",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is Sanitization? Does Angular support it?",
+    "slug": "what-is-sanitization-does-angular-support-it",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is select ICU expression?",
+    "slug": "what-is-select-icu-expression",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the benefit of Automatic Inlining of Fonts?",
+    "slug": "what-is-the-benefit-of-automatic-inlining-of-fonts",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the Component Lifecycle in Angular?",
+    "slug": "angular-what-is-the-component-lifecycle-in-angular",
+    "difficulty": "easy",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is the difference between interpolated content and innerHTML?",
+    "slug": "what-is-the-difference-between-interpolated-content-and-innerhtml",
+    "difficulty": "medium",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the difference between ngOnInit and Constructor?",
+    "slug": "angular-what-is-the-difference-between-ngoninit-and-constructor",
+    "difficulty": "easy",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is the option to choose between inline and external template file?",
+    "slug": "what-is-the-option-to-choose-between-inline-and-external-template-file",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the purpose of *ngFor directive?",
+    "slug": "what-is-the-purpose-of-ngfor-directive",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the purpose of animate function?",
+    "slug": "what-is-the-purpose-of-animate-function",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the purpose of any type cast function?",
+    "slug": "what-is-the-purpose-of-any-type-cast-function",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the purpose of async pipe?",
+    "slug": "what-is-the-purpose-of-async-pipe",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the purpose of differential loading in CLI?",
+    "slug": "what-is-the-purpose-of-differential-loading-in-cli",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the purpose of hidden property?",
+    "slug": "what-is-the-purpose-of-hidden-property",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the purpose of i18n attribute?",
+    "slug": "what-is-the-purpose-of-i18n-attribute",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the purpose of ngFor trackBy?",
+    "slug": "what-is-the-purpose-of-ngfor-trackby",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the purpose of ngIf directive?",
+    "slug": "what-is-the-purpose-of-ngif-directive",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the purpose of ngSwitch directive?",
+    "slug": "what-is-the-purpose-of-ngswitch-directive",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the reason to deprecate Web Tracing Framework?",
+    "slug": "what-is-the-reason-to-deprecate-web-tracing-framework",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is the reason to deprecate web worker packages?",
+    "slug": "what-is-the-reason-to-deprecate-web-worker-packages",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is transition function?",
+    "slug": "what-is-transition-function",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is type narrowing?",
+    "slug": "what-is-type-narrowing",
+    "difficulty": "easy",
+    "hasQuickSummary": false
+  },
+  {
+    "title": "What is View Encapsulation?",
+    "slug": "angular-what-is-view-encapsulation",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is your Angular Testing Strategy?",
+    "slug": "angular-what-is-your-angular-testing-strategy",
+    "difficulty": "medium",
+    "hasQuickSummary": true
+  },
+  {
+    "title": "What is Zone.js and Zoneless Change Detection?",
+    "slug": "angular-what-is-zonejs-and-zoneless-change-detection",
+    "difficulty": "hard",
+    "hasQuickSummary": true
+  }
+]

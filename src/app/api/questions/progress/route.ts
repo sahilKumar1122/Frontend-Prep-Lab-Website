@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { updateUserStats } from '@/lib/streak-calculator';
+import { invalidateUserCache } from '@/lib/cache';
 
 export async function POST(request: Request) {
   try {
@@ -14,59 +15,59 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check if progress exists
+    // Use upsert instead of findUnique + update/create for better performance
     const existingProgress = await prisma.userProgress.findUnique({
       where: {
-        userId_questionId: {
-          userId,
-          questionId,
-        },
+        userId_questionId: { userId, questionId },
+      },
+      select: {
+        id: true,
+        status: true,
+        startedAt: true,
+        timeSpent: true,
       },
     });
 
-    let progress;
+    const isNewCompletion = status === 'completed' && (!existingProgress || existingProgress.status !== 'completed');
+    const now = new Date();
 
-    if (existingProgress) {
-      // Update existing progress
-      progress = await prisma.userProgress.update({
+    // Upsert progress and conditionally update stats in parallel
+    const [progress] = await Promise.all([
+      prisma.userProgress.upsert({
         where: {
-          userId_questionId: {
-            userId,
-            questionId,
-          },
+          userId_questionId: { userId, questionId },
         },
-        data: {
+        update: {
           status,
-          completedAt: status === 'completed' ? new Date() : null,
-          startedAt: existingProgress.startedAt || new Date(),
+          completedAt: status === 'completed' ? now : null,
           timeSpent: status === 'completed' && timeSpentMinutes 
             ? timeSpentMinutes 
-            : existingProgress.timeSpent,
+            : existingProgress?.timeSpent || 0,
         },
-      });
-    } else {
-      // Create new progress
-      progress = await prisma.userProgress.create({
-        data: {
+        create: {
           userId,
           questionId,
           status,
-          startedAt: new Date(),
-          completedAt: status === 'completed' ? new Date() : null,
-          timeSpent: status === 'completed' && timeSpentMinutes 
-            ? timeSpentMinutes 
-            : 0,
+          startedAt: now,
+          completedAt: status === 'completed' ? now : null,
+          timeSpent: status === 'completed' && timeSpentMinutes ? timeSpentMinutes : 0,
         },
-      });
-    }
+      }),
+      // Update user stats in parallel if completed
+      isNewCompletion 
+        ? updateUserStats(userId, questionId, timeSpentMinutes || 5)
+        : Promise.resolve(),
+    ]);
 
-    // Update user stats if completed
-    if (status === 'completed' && (!existingProgress || existingProgress.status !== 'completed')) {
-      // Update stats with streak and time tracking
-      await updateUserStats(userId, questionId, timeSpentMinutes || 5);
-    }
+    // Invalidate user cache when progress is updated
+    invalidateUserCache(userId);
 
-    return NextResponse.json(progress);
+    // Set cache headers for client-side caching
+    return NextResponse.json(progress, {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   } catch (error) {
     console.error('Progress update error:', error);
     return NextResponse.json(

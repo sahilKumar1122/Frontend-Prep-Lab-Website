@@ -1,12 +1,15 @@
 import { prisma } from '@/lib/prisma';
-import { currentUser } from '@clerk/nextjs/server';
 import Link from 'next/link';
 import { QuestionFilters } from '@/components/questions/QuestionFilters';
 import { QuestionTable } from '@/components/questions/QuestionTable';
 import { Footer } from '@/components/layout/Footer';
+import { queryCache, getCacheKey, CacheKeys } from '@/lib/cache';
 
-// Revalidate this page every 60 seconds (ISR)
-export const revalidate = 60;
+// Aggressive ISR - revalidate every 30 seconds
+export const revalidate = 30;
+
+// Enable dynamic rendering for search
+export const dynamic = 'force-dynamic';
 
 interface SearchParams {
   category?: string;
@@ -20,8 +23,7 @@ export default async function QuestionsPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  const user = await currentUser();
-  
+
   // Build filter conditions
   const whereConditions: {
     category?: string;
@@ -47,36 +49,50 @@ export default async function QuestionsPage({
     ];
   }
 
-  // Fetch questions with user progress if logged in
-  const questions = user
-    ? await prisma.question.findMany({
-        where: whereConditions,
-        orderBy: [
-          { category: 'asc' },
-          { order: 'asc' },
-          { createdAt: 'desc' },
-        ],
-        include: {
-          progress: {
-            where: { userId: user.id },
-            take: 1,
-          },
-        },
-      })
-    : await prisma.question.findMany({
-        where: whereConditions,
-        orderBy: [
-          { category: 'asc' },
-          { order: 'asc' },
-          { createdAt: 'desc' },
-        ],
-      });
+  // Generate cache key WITHOUT user (faster, shared cache)
+  const cacheKey = getCacheKey(
+    'questions-page',
+    params.category || 'all',
+    params.difficulty || 'all',
+    params.search || ''
+  );
 
-  // Get category counts
-  const categoryCounts = await prisma.question.groupBy({
-    by: ['category'],
-    _count: true,
-  });
+  // Fetch questions and category counts in parallel with caching
+  const [questions, categoryCounts] = await Promise.all([
+    // Cache questions query (30 second TTL for filtered results, 60s for all)
+    queryCache.get(
+      cacheKey,
+      () =>
+        prisma.question.findMany({
+          where: whereConditions,
+          orderBy: [
+            { category: 'asc' },
+            { order: 'asc' },
+            { createdAt: 'desc' },
+          ],
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            category: true,
+            difficulty: true,
+            tags: true,
+            readingTime: true,
+          },
+        }),
+      params.search ? 30000 : 60000 // 30s for search, 60s for normal
+    ),
+    // Cache category counts (longer TTL as they change less frequently)
+    queryCache.get(
+      CacheKeys.CATEGORY_COUNTS,
+      () =>
+        prisma.question.groupBy({
+          by: ['category'],
+          _count: true,
+        }),
+      300000 // 5 minutes
+    ),
+  ]);
 
   const categories = [
     'angular',
@@ -103,23 +119,12 @@ export default async function QuestionsPage({
               </p>
             </div>
             <div className="flex items-center gap-4">
-              {user ? (
-                <>
-                  <Link
-                    href="/dashboard"
-                    className="rounded-lg px-4 py-2 font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-                  >
-                    Dashboard
-                  </Link>
-                </>
-              ) : (
-                <Link
-                  href="/sign-in"
-                  className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 font-medium text-white transition-all hover:from-blue-700 hover:to-purple-700"
-                >
-                  Sign In
-                </Link>
-              )}
+              <Link
+                href="/sign-in"
+                className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 font-medium text-white transition-all hover:from-blue-700 hover:to-purple-700"
+              >
+                Sign In
+              </Link>
             </div>
           </div>
         </div>
@@ -176,7 +181,7 @@ export default async function QuestionsPage({
             </Link>
           </div>
         ) : (
-          <QuestionTable questions={questions} isLoggedIn={!!user} />
+          <QuestionTable questions={questions} isLoggedIn={false} />
         )}
       </main>
       <Footer />

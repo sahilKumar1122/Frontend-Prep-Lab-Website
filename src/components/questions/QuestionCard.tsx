@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { memo, useMemo } from 'react';
 
 interface QuestionCardProps {
   question: {
@@ -19,35 +20,39 @@ interface QuestionCardProps {
   totalQuestions?: number;
 }
 
-export function QuestionCard({ question, userProgress, isLoggedIn, questionNumber }: QuestionCardProps) {
-  const difficultyColors = {
-    easy: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-    medium: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
-    hard: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
-  };
+const difficultyColors = {
+  easy: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
+  medium: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
+  hard: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+} as const;
 
-  const statusColors = {
-    'not-started': 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-    'in-progress': 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
-    completed: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-    review: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300',
-  };
+const statusColors = {
+  'not-started': 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+  'in-progress': 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
+  completed: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
+  review: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300',
+} as const;
 
-  const statusIcons = {
-    'not-started': '○',
-    'in-progress': '◐',
-    completed: '✓',
-    review: '↻',
-  };
+const statusIcons = {
+  'not-started': '○',
+  'in-progress': '◐',
+  completed: '✓',
+  review: '↻',
+} as const;
 
+function QuestionCardComponent({ question, userProgress, isLoggedIn, questionNumber }: QuestionCardProps) {
   const status = userProgress?.status || 'not-started';
   
-  // Handle tags (array or string)
-  const tags: string[] = Array.isArray(question.tags) 
-    ? question.tags 
-    : typeof question.tags === 'string'
-    ? (question.tags.startsWith('[') ? JSON.parse(question.tags) : [])
-    : [];
+  // Memoize tags parsing to avoid re-computation
+  const tags = useMemo<string[]>(() => {
+    if (Array.isArray(question.tags)) {
+      return question.tags;
+    }
+    if (typeof question.tags === 'string') {
+      return question.tags.startsWith('[') ? JSON.parse(question.tags) : [];
+    }
+    return [];
+  }, [question.tags]);
 
   return (
     <Link
@@ -140,3 +145,17 @@ export function QuestionCard({ question, userProgress, isLoggedIn, questionNumbe
   );
 }
 
+// Memoize component to prevent unnecessary re-renders
+export const QuestionCard = memo(QuestionCardComponent, (prevProps, nextProps) => {
+  // Custom comparison function for better performance
+  return (
+    prevProps.question.id === nextProps.question.id &&
+    prevProps.question.slug === nextProps.question.slug &&
+    prevProps.question.title === nextProps.question.title &&
+    prevProps.userProgress?.status === nextProps.userProgress?.status &&
+    prevProps.isLoggedIn === nextProps.isLoggedIn &&
+    prevProps.questionNumber === nextProps.questionNumber
+  );
+});
+
+QuestionCard.displayName = 'QuestionCard';

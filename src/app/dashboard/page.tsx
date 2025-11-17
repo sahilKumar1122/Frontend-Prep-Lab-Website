@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { getOrCreateUser } from '@/lib/user-sync';
 import { Footer } from '@/components/layout/Footer';
+import { queryCache, CacheKeys } from '@/lib/cache';
 
 export default async function DashboardPage() {
   const clerkUser = await currentUser();
@@ -23,10 +24,24 @@ export default async function DashboardPage() {
     clerkUser.imageUrl
   );
 
-  // Get user stats
-  const stats = await prisma.userStats.findUnique({
-    where: { userId: user.id },
-  });
+  // Get user stats with caching (30 second TTL)
+  const stats = await queryCache.get(
+    CacheKeys.USER_STATS(user.id),
+    () =>
+      prisma.userStats.findUnique({
+        where: { userId: user.id },
+        select: {
+          totalQuestionsCompleted: true,
+          totalTimeSpent: true,
+          currentStreak: true,
+          longestStreak: true,
+          averageTimePerQuestion: true,
+          questionsByCategory: true,
+          questionsByDifficulty: true,
+        },
+      }),
+    30000 // 30 seconds
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">

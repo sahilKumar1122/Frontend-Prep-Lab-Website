@@ -1,29 +1,15 @@
-import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server';
 
-/**
- * Keep-alive endpoint to prevent database from sleeping
- * Call this from a cron job every 5 minutes
- */
+// Keep database connection warm
 export async function GET() {
   try {
-    // Simple query to wake database
     await prisma.$queryRaw`SELECT 1`;
-    
-    return NextResponse.json({ 
-      status: 'ok', 
-      timestamp: new Date().toISOString() 
-    });
+    return NextResponse.json({ status: 'ok', timestamp: new Date().toISOString() });
   } catch (error) {
-    console.error('Keep-alive failed:', error);
-    return NextResponse.json({ 
-      status: 'error', 
-      error: error instanceof Error ? error.message : 'Unknown error' 
-    }, { status: 500 });
+    return NextResponse.json({ status: 'error', error: String(error) }, { status: 500 });
   }
 }
 
-// Disable caching for this route
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
-
