@@ -20,7 +20,12 @@ export const prisma = globalForPrisma.prisma ?? new PrismaClient({
 });
 
 // Aggressive connection warming - keep connection alive
-prisma.$connect().catch(console.error);
+// Only connect if DATABASE_URL is available
+if (process.env.DATABASE_URL) {
+  prisma.$connect().catch((error) => {
+    console.error('Failed to connect to database:', error);
+  });
+}
 
 // Keep-alive query every 5 minutes to prevent cold starts
 if (process.env.NODE_ENV === 'development') {

@@ -15,14 +15,22 @@ interface PageProps {
 
 // Generate static pages at build time for better performance
 export async function generateStaticParams() {
-  const questions = await prisma.question.findMany({
-    select: { slug: true },
-    take: 50, // Generate first 50 questions statically
-  });
+  try {
+    // Only generate static params if database is available
+    const questions = await prisma.question.findMany({
+      select: { slug: true },
+      take: 50, // Generate first 50 questions statically
+    });
 
-  return questions.map((question) => ({
-    slug: question.slug,
-  }));
+    return questions.map((question) => ({
+      slug: question.slug,
+    }));
+  } catch (error) {
+    // If database is not available during build (e.g., on Vercel), return empty array
+    // Pages will be generated on-demand instead
+    console.warn('Database not available during build, skipping static generation:', error);
+    return [];
+  }
 }
 
 // Aggressive caching for maximum speed
