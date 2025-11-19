@@ -21,9 +21,12 @@ export function MarkdownRendererCore({ content, className = '' }: MarkdownRender
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          code({ inline, className, children, ...props }: any) {
+          code(props) {
+            const inline = 'inline' in props ? props.inline : false;
+            const className = props.className || '';
+            const children = props.children;
             const codeString = String(children).replace(/\n$/, '');
-            const match = /language-(\w+)/.exec(className || '');
+            const match = /language-(\w+)/.exec(className);
             const language = match ? match[1] : '';
 
             // Inline code
@@ -58,7 +61,7 @@ export function MarkdownRendererCore({ content, className = '' }: MarkdownRender
               {children}
             </h3>
           ),
-          p: ({ children }: any) => {
+          p: ({ children }) => {
             // Don't wrap paragraphs at all - let react-markdown handle structure
             // This prevents div-in-p errors for code blocks
             return (

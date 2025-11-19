@@ -1,9 +1,5 @@
 import type { NextConfig } from "next";
-
-// Bundle analyzer
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-});
+import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const nextConfig: NextConfig = {
   // Performance optimizations
@@ -54,7 +50,7 @@ const nextConfig: NextConfig = {
   },
 
   // Webpack configuration for optimizations
-  webpack: (config, { isServer, webpack }) => {
+  webpack: (config, { isServer }) => {
     if (isServer) {
       // Exclude client-side only packages from server bundle
       config.externals = [...(config.externals || []), 'mermaid'];
@@ -111,4 +107,6 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withBundleAnalyzer(nextConfig);
+export default withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})(nextConfig);

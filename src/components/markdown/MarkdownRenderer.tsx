@@ -62,7 +62,7 @@ function Mermaid({ chart }: MermaidProps) {
           },
         });
 
-        const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+        const id = `mermaid-${Math.random().toString(36).substring(2, 11)}`;
         const { svg } = await mermaid.render(id, chart);
         setSvg(svg);
         setError(false);
