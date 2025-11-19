@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { QuestionProgress } from '@/components/questions/QuestionProgress';
 import { Footer } from '@/components/layout/Footer';
 import { queryCache, getCacheKey } from '@/lib/cache';
-import { MarkdownRendererSimple } from '@/components/markdown/MarkdownRendererSimple';
+import { MarkdownRendererCore } from '@/components/markdown/MarkdownRendererCore';
 
 interface PageProps {
   params: Promise<{
@@ -61,6 +61,21 @@ export default async function QuestionPage({ params }: PageProps) {
 
   const tags = Array.isArray(question.tags) ? question.tags : [];
 
+  // Get current user (optional - questions are public)
+  const clerkUser = await currentUser();
+
+  // Get user progress if logged in and user exists in database
+  const userProgress = clerkUser
+    ? await prisma.userProgress.findUnique({
+        where: {
+          userId_questionId: {
+            userId: clerkUser.id,
+            questionId: question.id,
+          },
+        },
+      }).catch(() => null) // Handle case where user doesn't exist in DB yet
+    : null;
+
   // Get navigation data FAST (no auth needed)
   const [previousQuestion, nextQuestion, totalQuestions] = await Promise.all([
     // Previous question
@@ -110,7 +125,7 @@ export default async function QuestionPage({ params }: PageProps) {
               <span>Back to Questions</span>
             </Link>
             <div className="flex items-center gap-4">
-              {user ? (
+              {clerkUser ? (
                 <Link
                   href="/dashboard"
                   className="rounded-lg px-4 py-2 font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
@@ -181,7 +196,7 @@ export default async function QuestionPage({ params }: PageProps) {
             <h2 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
               Question
             </h2>
-            <MarkdownRendererSimple content={question.content} />
+            <MarkdownRendererCore content={question.content} />
           </div>
 
           {/* Answer Content */}
@@ -189,15 +204,15 @@ export default async function QuestionPage({ params }: PageProps) {
             <h2 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
               Answer
             </h2>
-            <MarkdownRendererSimple content={question.answer} />
+            <MarkdownRendererCore content={question.answer} />
           </div>
 
           {/* Progress Tracking - Load async on client */}
           <QuestionProgress
-            userId={''}
+            userId={clerkUser?.id || ''}
             questionId={question.id}
-            initialStatus={undefined}
-            initialTimeSpent={0}
+            initialStatus={userProgress?.status}
+            initialTimeSpent={userProgress?.timeSpent || 0}
           />
 
           {/* Navigation: Previous/Next */}

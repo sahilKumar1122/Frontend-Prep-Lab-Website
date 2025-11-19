@@ -18,7 +18,7 @@ interface MarkdownRendererCoreProps {
 
 export function MarkdownRendererCore({ content, className = '' }: MarkdownRendererCoreProps) {
   return (
-    <div className={`prose prose-slate dark:prose-invert max-w-none ${className}`}>
+    <div className={`prose prose-slate dark:prose-invert max-w-none prose-pre:my-0 prose-pre:p-0 prose-pre:bg-transparent ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{

@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { currentUser } from '@clerk/nextjs/server';
 import Link from 'next/link';
 import { QuestionFilters } from '@/components/questions/QuestionFilters';
 import { QuestionTable } from '@/components/questions/QuestionTable';
@@ -23,6 +24,9 @@ export default async function QuestionsPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
+  
+  // Get current user to fetch progress
+  const clerkUser = await currentUser();
 
   // Build filter conditions
   const whereConditions: {
@@ -49,12 +53,13 @@ export default async function QuestionsPage({
     ];
   }
 
-  // Generate cache key WITHOUT user (faster, shared cache)
+  // Generate cache key - include user ID if logged in (for progress)
   const cacheKey = getCacheKey(
     'questions-page',
     params.category || 'all',
     params.difficulty || 'all',
-    params.search || ''
+    params.search || '',
+    clerkUser?.id || 'anonymous'
   );
 
   // Fetch questions and category counts in parallel with caching
@@ -78,6 +83,17 @@ export default async function QuestionsPage({
             difficulty: true,
             tags: true,
             readingTime: true,
+            // Include progress if user is logged in
+            ...(clerkUser ? {
+              progress: {
+                where: { userId: clerkUser.id },
+                select: {
+                  status: true,
+                  completedAt: true,
+                },
+                take: 1,
+              },
+            } : {}),
           },
         }),
       params.search ? 30000 : 60000 // 30s for search, 60s for normal
@@ -119,12 +135,21 @@ export default async function QuestionsPage({
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <Link
-                href="/sign-in"
-                className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 font-medium text-white transition-all hover:from-blue-700 hover:to-purple-700"
-              >
-                Sign In
-              </Link>
+              {clerkUser ? (
+                <Link
+                  href="/dashboard"
+                  className="rounded-lg px-4 py-2 font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                >
+                  Dashboard
+                </Link>
+              ) : (
+                <Link
+                  href="/sign-in"
+                  className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 font-medium text-white transition-all hover:from-blue-700 hover:to-purple-700"
+                >
+                  Sign In
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -181,7 +206,7 @@ export default async function QuestionsPage({
             </Link>
           </div>
         ) : (
-          <QuestionTable questions={questions} isLoggedIn={false} />
+          <QuestionTable questions={questions} isLoggedIn={!!clerkUser} />
         )}
       </main>
       <Footer />

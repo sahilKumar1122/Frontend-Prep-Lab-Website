@@ -12,6 +12,8 @@ export function MermaidChart({ chart }: MermaidChartProps) {
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
+    let isMounted = true;
+    
     const renderChart = async () => {
       if (!chart) return;
       
@@ -19,29 +21,52 @@ export function MermaidChart({ chart }: MermaidChartProps) {
         // Dynamically import mermaid only when needed
         const mermaid = (await import('mermaid')).default;
         
+        // Always use light theme for mermaid diagrams
         mermaid.initialize({
           startOnLoad: false,
           theme: 'default',
           securityLevel: 'loose',
           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+          themeVariables: {
+            primaryColor: '#3b82f6',
+            primaryTextColor: '#1e293b',
+            primaryBorderColor: '#cbd5e1',
+            lineColor: '#64748b',
+            secondaryColor: '#f1f5f9',
+            tertiaryColor: '#e2e8f0',
+            background: '#ffffff',
+            mainBkgColor: '#f8fafc',
+            secondBkgColor: '#f1f5f9',
+            textColor: '#1e293b',
+          },
         });
 
         const id = `mermaid-${Math.random().toString(36).substring(7)}`;
         const { svg: renderedSvg } = await mermaid.render(id, chart);
-        setSvg(renderedSvg);
+        
+        if (isMounted) {
+          setSvg(renderedSvg);
+          setError(false);
+        }
       } catch (err) {
         console.error('Mermaid rendering error:', err);
-        setError(true);
+        if (isMounted) {
+          setError(true);
+        }
       }
     };
 
     renderChart();
+
+    return () => {
+      isMounted = false;
+    };
   }, [chart]);
 
   if (error) {
     return (
-      <div className="my-6 rounded-xl border border-red-200 bg-red-50 p-8 text-center dark:border-red-900 dark:bg-red-950">
-        <div className="text-red-600 dark:text-red-400">
+      <div className="my-3 rounded-lg bg-red-50 p-6 text-center">
+        <div className="text-red-600">
           Failed to render diagram
         </div>
       </div>
@@ -50,8 +75,8 @@ export function MermaidChart({ chart }: MermaidChartProps) {
 
   if (!svg) {
     return (
-      <div className="my-6 rounded-xl border border-slate-200 bg-slate-50 p-8 text-center dark:border-slate-800 dark:bg-slate-900">
-        <div className="text-slate-600 dark:text-slate-400">
+      <div className="my-3 rounded-lg bg-slate-50 p-6 text-center">
+        <div className="text-slate-600">
           Rendering diagram...
         </div>
       </div>
@@ -61,7 +86,7 @@ export function MermaidChart({ chart }: MermaidChartProps) {
   return (
     <div
       ref={ref}
-      className="my-6 flex justify-center overflow-x-auto rounded-xl border border-slate-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900"
+      className="my-3 flex justify-center overflow-x-auto rounded-lg bg-white p-6"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );

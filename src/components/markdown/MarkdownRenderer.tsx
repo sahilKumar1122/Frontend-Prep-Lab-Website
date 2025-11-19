@@ -42,12 +42,24 @@ function Mermaid({ chart }: MermaidProps) {
         // Dynamically import mermaid only on the client side
         const mermaid = (await import('mermaid')).default;
         
-        // Initialize mermaid
+        // Always use light theme for mermaid diagrams
         mermaid.initialize({
           startOnLoad: false,
           theme: 'default',
           securityLevel: 'loose',
           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+          themeVariables: {
+            primaryColor: '#3b82f6',
+            primaryTextColor: '#1e293b',
+            primaryBorderColor: '#cbd5e1',
+            lineColor: '#64748b',
+            secondaryColor: '#f1f5f9',
+            tertiaryColor: '#e2e8f0',
+            background: '#ffffff',
+            mainBkgColor: '#f8fafc',
+            secondBkgColor: '#f1f5f9',
+            textColor: '#1e293b',
+          },
         });
 
         const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
@@ -65,16 +77,18 @@ function Mermaid({ chart }: MermaidProps) {
 
   if (error) {
     return (
-      <div className="my-6 rounded-lg bg-red-50 p-4 text-red-600 dark:bg-red-950 dark:text-red-400">
-        Error rendering diagram
+      <div className="my-3 rounded-lg bg-red-50 p-6 text-center">
+        <div className="text-red-600">
+          Error rendering diagram
+        </div>
       </div>
     );
   }
 
   if (!svg) {
     return (
-      <div className="my-6 flex justify-center rounded-lg bg-slate-100 p-4 dark:bg-slate-800">
-        <div className="text-slate-600 dark:text-slate-400">Loading diagram...</div>
+      <div className="my-3 rounded-lg bg-slate-50 p-6 text-center">
+        <div className="text-slate-600">Loading diagram...</div>
       </div>
     );
   }
@@ -82,7 +96,7 @@ function Mermaid({ chart }: MermaidProps) {
   return (
     <div 
       ref={ref} 
-      className="my-6 flex justify-center overflow-x-auto rounded-lg bg-white p-4 dark:bg-slate-800"
+      className="my-3 flex justify-center overflow-x-auto rounded-lg bg-white p-6"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
