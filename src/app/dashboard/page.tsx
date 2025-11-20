@@ -14,34 +14,60 @@ export default async function DashboardPage() {
     redirect('/sign-in');
   }
 
-  // Ensure user exists in our database
-  const user = await getOrCreateUser(
-    clerkUser.id,
-    clerkUser.emailAddresses[0]?.emailAddress || '',
-    clerkUser.firstName && clerkUser.lastName 
-      ? `${clerkUser.firstName} ${clerkUser.lastName}`
-      : clerkUser.firstName || clerkUser.lastName || undefined,
-    clerkUser.imageUrl
-  );
+  let user: Awaited<ReturnType<typeof getOrCreateUser>>;
+  let stats;
+  
+  try {
+    // Ensure user exists in our database
+    user = await getOrCreateUser(
+      clerkUser.id,
+      clerkUser.emailAddresses[0]?.emailAddress || '',
+      clerkUser.firstName && clerkUser.lastName 
+        ? `${clerkUser.firstName} ${clerkUser.lastName}`
+        : clerkUser.firstName || clerkUser.lastName || undefined,
+      clerkUser.imageUrl
+    );
 
-  // Get user stats with caching (30 second TTL)
-  const stats = await queryCache.get(
-    CacheKeys.USER_STATS(user.id),
-    () =>
-      prisma.userStats.findUnique({
-        where: { userId: user.id },
-        select: {
-          totalQuestionsCompleted: true,
-          totalTimeSpent: true,
-          currentStreak: true,
-          longestStreak: true,
-          averageTimePerQuestion: true,
-          questionsByCategory: true,
-          questionsByDifficulty: true,
-        },
-      }),
-    30000 // 30 seconds
-  );
+    // Get user stats with caching (30 second TTL)
+    stats = await queryCache.get(
+      CacheKeys.USER_STATS(user.id),
+      () =>
+        prisma.userStats.findUnique({
+          where: { userId: user.id },
+          select: {
+            totalQuestionsCompleted: true,
+            totalTimeSpent: true,
+            currentStreak: true,
+            longestStreak: true,
+            averageTimePerQuestion: true,
+            questionsByCategory: true,
+            questionsByDifficulty: true,
+          },
+        }),
+      30000 // 30 seconds
+    );
+  } catch (error) {
+    console.error('Database error:', error);
+    // Return error page if database is unreachable
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+        <div className="mx-auto max-w-md rounded-lg bg-white p-8 text-center shadow-lg dark:bg-slate-900">
+          <h1 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
+            Database Connection Error
+          </h1>
+          <p className="mb-6 text-slate-600 dark:text-slate-400">
+            Unable to connect to the database. Please ensure your DATABASE_URL environment variable is set correctly.
+          </p>
+          <Link
+            href="/"
+            className="inline-block rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 font-medium text-white transition-all hover:from-blue-700 hover:to-purple-700"
+          >
+            Go Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">

@@ -63,7 +63,10 @@ export default async function QuestionsPage({
   );
 
   // Fetch questions and category counts in parallel with caching
-  const [questions, categoryCounts] = await Promise.all([
+  let questions, categoryCounts;
+  
+  try {
+    [questions, categoryCounts] = await Promise.all([
     // Cache questions query (30 second TTL for filtered results, 60s for all)
     queryCache.get(
       cacheKey,
@@ -108,7 +111,29 @@ export default async function QuestionsPage({
         }),
       300000 // 5 minutes
     ),
-  ]);
+    ]);
+  } catch (error) {
+    console.error('Database error:', error);
+    // Return error page if database is unreachable
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+        <div className="mx-auto max-w-md rounded-lg bg-white p-8 text-center shadow-lg dark:bg-slate-900">
+          <h1 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
+            Database Connection Error
+          </h1>
+          <p className="mb-6 text-slate-600 dark:text-slate-400">
+            Unable to connect to the database. Please check your environment variables.
+          </p>
+          <Link
+            href="/"
+            className="inline-block rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 font-medium text-white transition-all hover:from-blue-700 hover:to-purple-700"
+          >
+            Go Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const categories = [
     'angular',

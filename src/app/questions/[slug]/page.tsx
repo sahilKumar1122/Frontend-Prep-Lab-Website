@@ -40,52 +40,53 @@ export const dynamicParams = true;
 export default async function QuestionPage({ params }: PageProps) {
   const { slug } = await params;
   
-  // Fetch question FIRST - don't wait for auth at all!
-  const question = await queryCache.get(
-    getCacheKey('question', slug),
-    async () => {
-      return prisma.question.findUnique({
-        where: { slug },
-        select: {
-          id: true,
-          slug: true,
-          title: true,
-          content: true,
-          answer: true,
-          category: true,
-          difficulty: true,
-          tags: true,
-          order: true,
-          readingTime: true,
-        },
-      });
-    },
-    300000 // 5 minutes
-  );
-
-  if (!question) {
-    notFound();
-  }
-
-  const tags = Array.isArray(question.tags) ? question.tags : [];
-
-  // Get current user (optional - questions are public)
-  const clerkUser = await currentUser();
-
-  // Get user progress if logged in and user exists in database
-  const userProgress = clerkUser
-    ? await prisma.userProgress.findUnique({
-        where: {
-          userId_questionId: {
-            userId: clerkUser.id,
-            questionId: question.id,
+  let question, userProgress, previousQuestion, nextQuestion, totalQuestions, clerkUser;
+  
+  try {
+    // Fetch question FIRST - don't wait for auth at all!
+    question = await queryCache.get(
+      getCacheKey('question', slug),
+      async () => {
+        return prisma.question.findUnique({
+          where: { slug },
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            content: true,
+            answer: true,
+            category: true,
+            difficulty: true,
+            tags: true,
+            order: true,
+            readingTime: true,
           },
-        },
-      }).catch(() => null) // Handle case where user doesn't exist in DB yet
-    : null;
+        });
+      },
+      300000 // 5 minutes
+    );
 
-  // Get navigation data FAST (no auth needed)
-  const [previousQuestion, nextQuestion, totalQuestions] = await Promise.all([
+    if (!question) {
+      notFound();
+    }
+
+    // Get current user (optional - questions are public)
+    clerkUser = await currentUser();
+
+    // Get user progress if logged in and user exists in database
+    userProgress = clerkUser
+      ? await prisma.userProgress.findUnique({
+          where: {
+            userId_questionId: {
+              userId: clerkUser.id,
+              questionId: question.id,
+            },
+          },
+        }).catch(() => null) // Handle case where user doesn't exist in DB yet
+      : null;
+
+    // Get navigation data FAST (no auth needed)
+    [previousQuestion, nextQuestion, totalQuestions] = await Promise.all([
     // Previous question
     prisma.question.findFirst({
       where: {
@@ -110,8 +111,31 @@ export default async function QuestionPage({ params }: PageProps) {
     }),
     // Total count (cached separately)
     queryCache.get('total-questions-count', () => prisma.question.count(), 3600000), // 1 hour
-  ]);
+    ]);
+  } catch (error) {
+    console.error('Database error:', error);
+    // Return error page if database is unreachable
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+        <div className="mx-auto max-w-md rounded-lg bg-white p-8 text-center shadow-lg dark:bg-slate-900">
+          <h1 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
+            Database Connection Error
+          </h1>
+          <p className="mb-6 text-slate-600 dark:text-slate-400">
+            Unable to load the question. Please ensure your DATABASE_URL environment variable is set correctly.
+          </p>
+          <Link
+            href="/questions"
+            className="inline-block rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 font-medium text-white transition-all hover:from-blue-700 hover:to-purple-700"
+          >
+            Back to Questions
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
+  const tags = Array.isArray(question.tags) ? question.tags : [];
   const questionNumber = question.order || 0;
 
   const difficultyColors = {

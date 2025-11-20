@@ -4,11 +4,24 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+// Optimize DATABASE_URL for serverless (Vercel)
+const getDatabaseUrl = () => {
+  const url = process.env.DATABASE_URL;
+  if (!url) return undefined;
+  
+  // Add connection pooling parameters for serverless if not already present
+  if (process.env.NODE_ENV === 'production' && !url.includes('connection_limit')) {
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}connection_limit=1&pool_timeout=20`;
+  }
+  return url;
+};
+
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({
   log: process.env.NODE_ENV === 'development' ? ['error'] : [], // Minimal logging
   datasources: {
     db: {
-      url: process.env.DATABASE_URL,
+      url: getDatabaseUrl(),
     },
   },
   omit: {
